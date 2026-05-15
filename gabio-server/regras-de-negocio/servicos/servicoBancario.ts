@@ -1,12 +1,12 @@
-// Servico bancaria, é aqui onde todas as operações acontecem
+// Servico bancario, é aqui onde todas as operações acontecem
 import { Operacao } from "../operacoes/requisicao";
 import { Resposta } from "../operacoes/resposta";
-import { RepositorioContas } from "../repositorio/repositorioContas";
+import { iRepositorioContas } from "../contratos/iRepositorioContas";
 
 export class ServicoBancario {
-    private repositorioContas: RepositorioContas;
+    private repositorioContas: iRepositorioContas;
 
-    constructor(repositorioContas: RepositorioContas) {
+    constructor(repositorioContas: iRepositorioContas) {
         this.repositorioContas = repositorioContas;
     }
 
@@ -29,11 +29,11 @@ export class ServicoBancario {
         }
     }
 
-    // BALANCE: Caso de uso onde o cliente deseja observar seu saldo atual
+    // BALANCE: Caso de uso onde o cliente deseja obter seu saldo atual
     public balance(op:Operacao): Resposta {
-        const conta = this.repositorioContas.buscar(op.accountId);
+        const saldo = this.repositorioContas.obterSaldo(op.accountId);
 
-        if(!conta) {
+        if(saldo == undefined) {
             return {
                 status: 'ERROR',
                 message: 'Conta de origem inexistente.',
@@ -44,13 +44,13 @@ export class ServicoBancario {
         return {
             status: 'OK',
             message: 'Saldo consultado com sucesso',
-            balance: conta.getBalance()
+            balance: saldo
         }
     }
 
-    // DEPOSIT: Caso de uso onde o cliente deseja fazer um desposito
+    // DEPOSIT: Caso de uso onde o cliente deseja fazer um deposito
     public deposit(op: Operacao): Resposta {
-        const conta = this.repositorioContas.buscar(op.accountId);
+        const conta = this.repositorioContas.realizarDeposito(op.accountId, op.value);
 
         if(!conta) {
             return {
@@ -59,9 +59,6 @@ export class ServicoBancario {
                 balance: 0
             }
         }
-
-        // Executando o DEPOSITO 
-        conta.alterarSaldo(conta.getBalance() + op.value);
 
         return {
             status: 'OK',
@@ -74,7 +71,7 @@ export class ServicoBancario {
     public withdraw(op: Operacao): Resposta {
         const conta = this.repositorioContas.buscar(op.accountId);
 
-            if(!conta) {
+        if(!conta) {
             return {
                 status: 'ERROR',
                 message: 'Conta de origem inexistente.',
@@ -90,8 +87,7 @@ export class ServicoBancario {
             }
         }
 
-        // Executado o saque
-        conta.alterarSaldo(conta.getBalance() - op.value);
+        this.repositorioContas.realizarSaque(op.accountId, op.value);
 
         return {
             status: 'OK',
@@ -100,7 +96,7 @@ export class ServicoBancario {
         }
     }
 
-    // TRANSFER: Caso de uso onde o cliente deseja fazer um saque
+    // TRANSFER: Caso de uso onde o cliente deseja fazer uma transferencia 
     public transfer(op: Operacao): Resposta {
         const contaOrigem = this.repositorioContas.buscar(op.accountId);
         const contaDestino = this.repositorioContas.buscar(op.toAccountId);
@@ -117,7 +113,15 @@ export class ServicoBancario {
             return {
                 status: 'ERROR',
                 message: 'Conta de destino inexistente.',
-                balance: 0
+                balance: contaOrigem.getBalance()
+            }
+        }
+
+        if(op.accountId === op.toAccountId) {
+            return {
+                status: 'ERROR',
+                message: 'Conta de origem e destino devem ser diferentes.',
+                balance: contaOrigem.getBalance()
             }
         }
 
@@ -129,9 +133,7 @@ export class ServicoBancario {
             }
         }
         
-        // Executando a transferencia da conta de ORIGEM --> conta de DESTINO
-        contaOrigem.alterarSaldo(contaOrigem.getBalance() - op.value);
-        contaDestino.alterarSaldo(contaDestino.getBalance() + op.value);
+        this.repositorioContas.realizarTransferencia(op.accountId, op.toAccountId, op.value);
 
         return {
             status: 'OK',
