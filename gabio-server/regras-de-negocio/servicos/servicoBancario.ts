@@ -1,7 +1,7 @@
 // Servico bancario, é aqui onde todas as operações acontecem
 import { Operacao } from "../operacoes/requisicao";
 import { Resposta } from "../operacoes/resposta";
-import { iRepositorioContas } from "../contratos/iRepositorioContas";
+import { iRepositorioContas } from "../contratoRepositorio/iRepositorioContas";
 
 export class ServicoBancario {
     private repositorioContas: iRepositorioContas;

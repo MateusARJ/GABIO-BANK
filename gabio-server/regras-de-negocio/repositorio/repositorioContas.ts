@@ -1,6 +1,6 @@
 // Repositorio de contas é responsavel por guardar nossas contas na memoria
 import { Conta } from "../entidade/conta";
-import { iRepositorioContas } from "../contratos/iRepositorioContas";
+import { iRepositorioContas } from "../contratoRepositorio/iRepositorioContas";
 
 export class RepositorioContas implements iRepositorioContas {
     // Vamos repartir a responsabilidade do entre servico + conta + repositorio
