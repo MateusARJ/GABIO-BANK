@@ -143,3 +143,6 @@ dist
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Lock files
+package-lock.json
