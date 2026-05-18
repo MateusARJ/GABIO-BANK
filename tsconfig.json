@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./gabio-server",
+    "strict": true,
+    "types": ["node"]
+  }
+}

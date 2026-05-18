@@ -137,7 +137,7 @@ export class ServicoBancario {
 
         return {
             status: 'OK',
-            message: 'Transferência conluída.',
+            message: 'Transferência concluída.',
             balance: contaOrigem.getBalance()
         }
 
