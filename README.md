@@ -117,11 +117,11 @@ Iniciar o servidor (após build):
 npm start
 ```
 
-Por padrão o servidor escuta a porta `3000` (pode ser alterada via variável de ambiente `PORT`).
+Por padrão o servidor escuta a porta `7001` (pode ser alterada via variável de ambiente `PORT`).
 
 ## Como testar (exemplos)
 
-Conecte um cliente WebSocket a `ws://localhost:3000` e envie uma mensagem GBTP completa (com quebras de linha). Exemplos:
+Conecte um cliente WebSocket a `ws://localhost:7001` e envie uma mensagem GBTP completa (com quebras de linha). Exemplos:
 
 1) Consulta de saldo:
 
@@ -202,7 +202,7 @@ Exemplo de uso com `wscat` (instale globalmente):
 
 ```bash
 npm install -g wscat
-wscat -c ws://localhost:3000
+wscat -c ws://localhost:7001
 # então cole a mensagem GBTP com quebras de linha (pode ser necessário colar como uma linha com \n dependendo do cliente)
 ```
 
