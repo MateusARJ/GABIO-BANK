@@ -31,7 +31,7 @@ Formato de requisição (sempre estas 4 linhas, ordem não sensível se o parser
 
 - `OPERATION:<tipo>` — Tipo da operação: `BALANCE`, `DEPOSIT`, `WITHDRAW`, `TRANSFER`.
 - `ACCOUNT_ID:<id>` — ID numérico da conta de origem.
-- `TO_ACCOUNT_ID:<id_destino>` — ID numérico da conta destino (somente para `TRANSFER`; para outras operações pode ficar vazio).
+- `TO_ACCOUNT_ID:<id_destino>` — ID numérico da conta destino (somente para `TRANSFER`; para outras operações deve ficar vazio ou ser `0`).
 - `VALUE:<valor>` — Valor numérico da operação (pode ser `0` para `BALANCE`).
 
 Exemplo de requisição (consulta de saldo):
@@ -79,6 +79,7 @@ BALANCE:225.00
 - `VALUE` deve ser numérico e não-negativo.
 - Operações `DEPOSIT`, `WITHDRAW` e `TRANSFER` exigem `VALUE > 0`.
 - Em `TRANSFER`, `TO_ACCOUNT_ID` é obrigatório e deve ser diferente de `ACCOUNT_ID`.
+- Em `BALANCE`, `DEPOSIT` e `WITHDRAW`, `TO_ACCOUNT_ID` deve estar vazio ou ser `0`.
 - Falhas de validação retornam `STATUS:ERROR` com `MESSAGE` explicando o motivo; quando possível, inclui o `BALANCE` atual da conta de origem.
 
 ## Implementação do Servidor

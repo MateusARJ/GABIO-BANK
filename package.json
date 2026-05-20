@@ -1,12 +1,10 @@
 {
   "name": "gabio-bank",
   "version": "1.0.0",
-  "source": "./src/index.html",
   "scripts": {
     "prestart": "npm run build",
     "start": "node ./dist/server.js",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
