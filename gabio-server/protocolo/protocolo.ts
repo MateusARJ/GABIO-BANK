@@ -85,11 +85,7 @@ export class ParsearMensagem {
         }
         // Para outras operações, TO_ACCOUNT_ID só pode ser vazio ou zero
         else {
-
-            if (toAccountIdStr !== undefined && toAccountIdStr !== '' && toAccountIdStr !== '0') {
-                throw new Error(`TO_ACCOUNT_ID deve estar vazio ou ser 0 para a operação ${operation}.`);
-            }
-
+            // Qualquer outro valor sera automaticamente normalizado como 0 (Strings, NaN, Null etc)
             toAccountId = 0;
         }
 
@@ -99,6 +95,11 @@ export class ParsearMensagem {
         // Valida se VALUE é um número válido
         if (valueStr === '' || !Number.isFinite(value)) {
             throw new Error(`VALUE inválido: "${valueStr}". Deve ser um número.`);
+        }
+
+        // Limite máximo permitido para transações
+        if (value > 50000) {
+            throw new Error('VALUE excede limite permitido.');
         }
 
         // Valida VALUE para BALANCE
