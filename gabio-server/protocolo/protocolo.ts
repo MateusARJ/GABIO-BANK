@@ -77,7 +77,8 @@ export class ParsearMensagem {
         }
         // Para outras operações, TO_ACCOUNT_ID só pode ser vazio ou zero
         else {
-            if (toAccountIdStr !== '' && toAccountIdStr !== '0') {
+
+            if (toAccountIdStr !== undefined && toAccountIdStr !== '' && toAccountIdStr !== '0') {
                 throw new Error(`TO_ACCOUNT_ID deve estar vazio ou ser 0 para a operação ${operation}.`);
             }
 
