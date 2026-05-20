@@ -53,10 +53,16 @@ export class ParsearMensagem {
 
         // Extrair e validar ACCOUNT_ID
         const accountIdStr = campos.get('ACCOUNT_ID')!;
-        if (accountIdStr === '' || isNaN(Number(accountIdStr))) {
-            throw new Error(`ACCOUNT_ID inválido: "${accountIdStr}". Deve ser um número.`);
-        }
         const accountId = Number(accountIdStr);
+        // Valida ACCOUNT_ID
+        if (
+            accountIdStr === '' ||
+            !Number.isFinite(accountId) ||
+            !Number.isInteger(accountId) ||
+            accountId <= 0
+        ) {
+            throw new Error(`ACCOUNT_ID inválido: "${accountIdStr}". Deve ser um número inteiro e maior que zero.`);
+        }
 
         // Extrair TO_ACCOUNT_ID (pode ser vazio para operações que não são TRANSFER)
         const toAccountIdStr = campos.get('TO_ACCOUNT_ID')!;
@@ -68,26 +74,36 @@ export class ParsearMensagem {
                 throw new Error(`TO_ACCOUNT_ID inválido para TRANSFER: "${toAccountIdStr}". Deve ser um número.`);
             }
             toAccountId = Number(toAccountIdStr);
-        } else {
-            // Para outras operações, TO_ACCOUNT_ID pode ser vazio ou zero
-            toAccountId = toAccountIdStr === '' ? 0 : Number(toAccountIdStr);
+        }
+        // Para outras operações, TO_ACCOUNT_ID só pode ser vazio ou zero
+        else {
+            if (toAccountIdStr !== '' && toAccountIdStr !== '0') {
+                throw new Error(`TO_ACCOUNT_ID deve estar vazio ou ser 0 para a operação ${operation}.`);
+            }
+
+            toAccountId = 0;
         }
 
         // Extrair e validar VALUE
         const valueStr = campos.get('VALUE')!;
-        if (valueStr === '' || isNaN(Number(valueStr))) {
+        const value = Number(valueStr);
+        // Valida se VALUE é um número válido
+        if (valueStr === '' || !Number.isFinite(value)) {
             throw new Error(`VALUE inválido: "${valueStr}". Deve ser um número.`);
         }
-        const value = Number(valueStr);
 
-        // Validar que o valor não é negativo
-        if (value < 0) {
-            throw new Error(`VALUE não pode ser negativo: ${value}`);
+        // Valida VALUE para BALANCE
+        if (operation === 'BALANCE') {
+            if (value !== 0) {
+                throw new Error(`O campo VALUE deve ser zero para a operação ${operation}.`);
+            }
         }
 
-        // Validar que DEPOSIT, WITHDRAW e TRANSFER possuem valor maior que zero
-        if ((operation === 'DEPOSIT' || operation === 'WITHDRAW' || operation === 'TRANSFER') && value <= 0) {
-            throw new Error(`VALUE deve ser maior que zero para a operação ${operation}.`);
+        // Valida VALUE para DEPOSIT, WITHDRAW e TRANSFER
+        if (operation === 'DEPOSIT' || operation === 'WITHDRAW' || operation === 'TRANSFER') {
+            if (value <= 0) {
+                throw new Error(`O campo VALUE deve ser maior que zero para a operação ${operation}.`);
+            }
         }
 
         return {
