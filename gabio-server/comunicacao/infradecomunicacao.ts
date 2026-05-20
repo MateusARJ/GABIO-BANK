@@ -45,6 +45,7 @@ export class InfraDeComunicacao {
                         return;
                     };
 
+
                     const resposta = await this.processador(mensagem);
 
                     if (cliente.readyState === WebSocket.OPEN) {
@@ -91,5 +92,3 @@ export class InfraDeComunicacao {
     }
 
 }
-
-

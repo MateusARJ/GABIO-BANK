@@ -1,5 +1,5 @@
-import { ParsearMensagem } from './protocolo/protocolo';
-import { Serializador } from './protocolo/serializarResposta';
+import { ParsearMensagem } from '../protocolo/protocolo';
+import { Serializador } from '../protocolo/serializarResposta';
 import { RepositorioContas } from '../regras-de-negocio/repositorio/repositorioContas';
 import { ServicoBancario } from '../regras-de-negocio/servicos/servicoBancario';
 
@@ -19,7 +19,7 @@ export async function processadorDeMensagens(mensagem: string): Promise<string> 
     } catch (err) {
 
         const message = err instanceof Error ? err.message : String(err);
-        return await serializador.console.erro(message);
+        return await serializador.erro(message);
 
     }
 
