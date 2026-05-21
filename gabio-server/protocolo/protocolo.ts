@@ -3,21 +3,6 @@ import { Operacao, TipoRequisicao } from "../regras-de-negocio/operacoes/requisi
 // Operações válidas do protocolo GBTP
 const OPERACOES_VALIDAS: TipoRequisicao[] = ['BALANCE', 'DEPOSIT', 'WITHDRAW', 'TRANSFER'];
 
-function parsearInteiroPositivo(nomeCampo: string, valorCampo: string): number {
-    const numero = Number(valorCampo);
-
-    if (
-        valorCampo === '' ||
-        !Number.isFinite(numero) ||
-        !Number.isInteger(numero) ||
-        numero <= 0
-    ) {
-        throw new Error(`${nomeCampo} inválido: "${valorCampo}". Deve ser um número inteiro e maior que zero.`);
-    }
-
-    return numero;
-}
-
 /**
  * Faz o parsing de uma mensagem GBTP textual e converte para o objeto Operacao.
  *
@@ -48,11 +33,6 @@ export class ParsearMensagem {
             }
             const chave = linha.substring(0, indiceSeparador).trim();
             const valor = linha.substring(indiceSeparador + 1).trim();
-
-            if (campos.has(chave)) {
-                throw new Error(`Campo duplicado na requisição: ${chave}`);
-            }
-
             campos.set(chave, valor);
         }
 
@@ -73,7 +53,16 @@ export class ParsearMensagem {
 
         // Extrair e validar ACCOUNT_ID
         const accountIdStr = campos.get('ACCOUNT_ID')!;
-        const accountId = parsearInteiroPositivo('ACCOUNT_ID', accountIdStr);
+        const accountId = Number(accountIdStr);
+        // Valida ACCOUNT_ID
+        if (
+            accountIdStr === '' ||
+            !Number.isFinite(accountId) ||
+            !Number.isInteger(accountId) ||
+            accountId <= 0
+        ) {
+            throw new Error(`ACCOUNT_ID inválido: "${accountIdStr}". Deve ser um número inteiro e maior que zero.`);
+        }
 
         // Extrair TO_ACCOUNT_ID (pode ser vazio para operações que não são TRANSFER)
         const toAccountIdStr = campos.get('TO_ACCOUNT_ID')!;
@@ -81,7 +70,10 @@ export class ParsearMensagem {
 
         if (operation === 'TRANSFER') {
             // Para TRANSFER, TO_ACCOUNT_ID é obrigatório
-            toAccountId = parsearInteiroPositivo('TO_ACCOUNT_ID', toAccountIdStr);
+            if (toAccountIdStr === '' || isNaN(Number(toAccountIdStr))) {
+                throw new Error(`TO_ACCOUNT_ID inválido para TRANSFER: "${toAccountIdStr}". Deve ser um número.`);
+            }
+            toAccountId = Number(toAccountIdStr);
         }
         // Para outras operações, TO_ACCOUNT_ID só pode ser vazio ou zero
         else {
