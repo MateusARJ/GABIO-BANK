@@ -1,6 +1,12 @@
 import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 
+/**
+ * Classe responsável por gerenciar a comunicação via WebSocket.
+ * Permite iniciar um servidor WebSocket e definir um processador de mensagens.
+ * O processador é uma função assíncrona que recebe uma mensagem string e retorna uma resposta string.
+ */
+
 export class InfraDeComunicacao {
 
     private processador: ((mensagem: string) => Promise<string>) | null = null;
@@ -34,7 +40,11 @@ export class InfraDeComunicacao {
                     const mensagem = dados.toString();
 
                     // valido se a função de processamento foi definida
-                    if (!this.processador) return;
+                    if (!this.processador){
+                        console.error('Processador de mensagens não definido');
+                        return;
+                    };
+
 
                     const resposta = await this.processador(mensagem);
 
@@ -82,8 +92,3 @@ export class InfraDeComunicacao {
     }
 
 }
-
-// como usar:
-
-// Primeiro, importe a classe InfraDeComunicacao no ponto principal do seu backend. Depois, crie uma instância dela usando new InfraDeComunicacao(). Em seguida, use o método definirProcessador() para informar qual função será responsável por processar as mensagens recebidas. Essa função deve receber uma string e retornar uma Promise<string> com a resposta que será enviada ao cliente. Após definir o processador, chame o método iniciarServidor() passando a porta desejada, como 3000. A partir desse momento, a infraestrutura começa a aceitar conexões WebSocket, receber mensagens dos clientes, encaminhar essas mensagens para o processador definido e devolver automaticamente a resposta retornada pelo processador.
-
