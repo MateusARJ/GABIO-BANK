@@ -1,0 +1,21 @@
+{
+  "name": "gabio-bank",
+  "version": "1.0.0",
+  "scripts": {
+    "prestart": "npm run build",
+    "start": "node ./dist/server.js",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "ws": "^8.18.2"
+  }
+}
