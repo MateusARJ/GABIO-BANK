@@ -14,12 +14,12 @@ export async function processadorDeMensagens(mensagem: string): Promise<string> 
 
         const operacao = parser.parsear(mensagem);
         const resposta = servico.executarOperacao(operacao);
-        return await serializador.sucesso(resposta);
+        return  serializador.sucesso(resposta);
     
     } catch (err) {
 
         const message = err instanceof Error ? err.message : String(err);
-        return await serializador.erro(message);
+        return  serializador.erro(message);
 
     }
 
